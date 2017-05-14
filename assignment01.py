@@ -24,13 +24,13 @@ gpio.setup(green_led_pin, gpio.OUT)
 def onLED(distance):
     if distance >= 100 :
         gpio.output(green_led_pin,True)
-        time.sleep(0.5)
+        print "Green LED ON"
     elif distance >= 30 :
         gpio.output(yellow_led_pin,True)
-        time.sleep(0.5)
-    else
+        print "Yellow LED ON"
+    else :
         gpio.output(red_led_pin,True)
-        time.sleep(0.5)
+        print "Red LED ON"
 
     gpio.output(red_led_pin,False)
     gpio.output(yellow_led_pin,False)
@@ -63,8 +63,7 @@ try:
 		distance = round(distance, 2)
 
 		print "Distance : ", distance, "cm"
-
-        onLED(int(distance))
+        onLED(distance)
 
 # end
 except KeyboardInterrupt as e:
