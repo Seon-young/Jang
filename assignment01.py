@@ -12,6 +12,10 @@ red_led_pin = 16
 yellow_led_pin = 20
 green_led_pin = 21
 
+# sensor_dht11's using pin number
+dht11_pin = dht11.DHT11(pin=5)
+valueTemp = 0
+
 gpio.setmode(gpio.BCM)
 # sensor_sonic's gpio setting
 gpio.setup(trig_pin, gpio.OUT)
@@ -21,16 +25,26 @@ gpio.setup(red_led_pin, gpio.OUT)
 gpio.setup(yellow_led_pin, gpio.OUT)
 gpio.setup(green_led_pin, gpio.OUT)
 
-def onLED(distance):
-    if distance >= 100 :
+def onLED(distance, valueTemp):
+    if valueTemp >= 30 :
+        gpio.output(green_led_pin,True)
+        gpio.output(yellow_led_pin,True)
+        gpio.output(red_led_pin,True)
+        print "All LED ON"
+        time.sleep(1)
+
+    elif distance >= 100 :
         gpio.output(green_led_pin,True)
         print "Green LED ON"
+        time.sleep(1)
     elif distance >= 30 :
         gpio.output(yellow_led_pin,True)
         print "Yellow LED ON"
+        time.sleep(1)
     else :
         gpio.output(red_led_pin,True)
         print "Red LED ON"
+        time.sleep(1)
 
     gpio.output(red_led_pin,False)
     gpio.output(yellow_led_pin,False)
@@ -62,8 +76,20 @@ try:
 		distance = pulse_duration * 17000
 		distance = round(distance, 2)
 
+        # sensor_dht11 sensing
+        temp_humid = dht11_pin.read()
+
+        if temp_humid.is_valid():
+            print("Temperature : %d C"%temp_humid.temperature)
+            valueTemp = temp_humid.temperature
+        else :
+            print("Temperature : %d C"%valueTemp)
+
+        time.sleep(1)
+
+
 		print "Distance : ", distance, "cm"
-        onLED(distance)
+        onLED(distance,valueTemp)
 
 # end
 except KeyboardInterrupt as e:
